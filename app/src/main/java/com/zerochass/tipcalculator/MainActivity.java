@@ -72,11 +72,73 @@ public class MainActivity extends AppCompatActivity {
         percentCustomTextView.setText(percentFormat.format(customPercent));
 
         // Calculates the custom tip and the total
-        double customTip = billAmount + customPercent;
+        double customTip = billAmount * customPercent;
         double customTotal = billAmount + customTip;
 
         // Displays the custom tip and total formatted as currency
         tipCustomTextView.setText(currencyFormat.format(customTip));
         totalCustomTextView.setText(currencyFormat.format(customTotal));
     }
+
+    /* The anonymous inner class object named customSeekBarListener responds to the customTipSeekBar's events */
+    private OnSeekBarChangeListener customSeekBarListener = new OnSeekBarChangeListener() {
+        // Updates the customPercent value and then calls updateCustom
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // This sets the customPercent to the position of the SeekBar's thumb
+            customPercent = progress / 100.0;
+
+            // Updates the custom tip TextViews
+            updateCustom();
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // Method onStartTrackingTouch is overridden because Java requires all methods in an interface you implement be overridden
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // Method onStopTrackingTouch is overridden because Java requires all methods in an interface you implement be overridden
+        }
+    };
+
+    /* Event-handling object that responds to amountEditText's events */
+    private TextWatcher amountEditTextWatcher = new TextWatcher() {
+        // This method is called when the user enters a number
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Convert amountEditText's text to a double value
+            try
+            {
+                billAmount = Double.parseDouble(s.toString()) / 100.0;
+            } // end try
+
+            catch (NumberFormatException e)
+            {
+                // The default value if an exception occurs
+                billAmount = 0.0;
+            }
+
+            // Display the currency formatted bill amount
+            amountDisplayTextView.setText(currencyFormat.format(billAmount));
+
+            // Update the 15% tip TextView
+            updateStandard();
+
+            // Update the custom tip TextView
+            updateCustom();
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // Method afterTextChanged is overridden because Java requires all methods in an interface that you implement be overridden
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Method beforeTextChanged is overridden because Java requires all methods in an interface that you implement be overridden
+        }
+    };
+
 }
